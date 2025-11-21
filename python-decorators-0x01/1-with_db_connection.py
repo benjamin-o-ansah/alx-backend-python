@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS users (
 """)
 
 # Insert sample records
-cursor.execute("INSERT INTO users (name, email) VALUES (?, ?)", ("John Doe", "john@example.com"))
-cursor.execute("INSERT INTO users (name, email) VALUES (?, ?)", ("Jane Smith", "jane@example.com"))
+cursor.execute("INSERT INTO users (name, email) VALUES (?, ?)", ("Janet Mensah Doe", "johnjanetmensah@example.com"))
+cursor.execute("INSERT INTO users (name, email) VALUES (?, ?)", ("Ama Boadi Smith", "amaboadi@example.com"))
 
 conn.commit()
 conn.close()
