@@ -48,7 +48,8 @@ class TestGetJson(unittest.TestCase):
         ("http://holberton.io", {"payload": False}),
     ])
     @patch('requests.get')
-    def test_get_json(self, test_url, test_payload, mock_requests_get):
+    def test_get_json(self, test_url, test_payload,
+                      mock_requests_get):
         """
         Tests that utils.get_json returns the expected JSON data
         and ensures requests.get was called correctly.
@@ -61,7 +62,7 @@ class TestGetJson(unittest.TestCase):
         # Call the function being tested
         result = get_json(test_url)
 
-        # Test 1: Check if requests.get was called exactly once with the test_url
+        # Test 1: Check if requests.get was called exactly once.
         mock_requests_get.assert_called_once_with(test_url)
 
         # Test 2: Check that the output is equal to the expected payload
@@ -75,7 +76,7 @@ class TestMemoize(unittest.TestCase):
     def test_memoize(self):
         """
         Tests that when a method wrapped with @memoize is called multiple times,
-        the decorated function is only executed once. 
+        the decorated function is only executed once.
         """
         class TestClass:
             """A class to test memoization on a property."""
