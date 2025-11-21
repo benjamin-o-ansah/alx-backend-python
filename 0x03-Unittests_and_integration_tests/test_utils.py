@@ -76,7 +76,7 @@ class TestMemoize(unittest.TestCase):
     def test_memoize(self):
         """
         Tests that when a method wrapped with @memoize is called multiple times,
-        the decorated function is only executed once.
+        the decorated function is executed once.
         """
         class TestClass:
             """A class to test memoization on a property."""
