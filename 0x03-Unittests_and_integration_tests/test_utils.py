@@ -75,7 +75,7 @@ class TestMemoize(unittest.TestCase):
     """
     def test_memoize(self):
         """
-        Tests that when a method wrapped with @memoize is called multiple times,
+        Tests that when a method wrapped with @memoize is called,
         the decorated function is executed once.
         """
         class TestClass:
@@ -107,3 +107,5 @@ class TestMemoize(unittest.TestCase):
 
             # Key assertion: a_method must be called only once
             mock_a_method.assert_called_once()
+
+            
