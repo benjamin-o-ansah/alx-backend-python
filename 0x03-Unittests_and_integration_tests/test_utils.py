@@ -107,5 +107,3 @@ class TestMemoize(unittest.TestCase):
 
             # Key assertion: a_method must be called only once
             mock_a_method.assert_called_once()
-
-            
