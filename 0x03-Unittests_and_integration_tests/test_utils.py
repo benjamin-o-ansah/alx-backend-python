@@ -4,7 +4,7 @@ Unit tests for the utils module functions.
 """
 import unittest
 from parameterized import parameterized
-from utils import access_nested_map,get_json
+from utils import access_nested_map,get_json,memoize
 from unittest.mock import Mock, patch
 
 
@@ -66,3 +66,43 @@ class TestGetJson(unittest.TestCase):
 
         # Test 2: Check that the output is equal to the expected payload
         self.assertEqual(result, test_payload)
+
+class TestMemoize(unittest.TestCase):
+    """
+    Tests the memoize decorator from the utils module.
+    """
+    def test_memoize(self):
+        """
+        Tests that when a method wrapped with @memoize is called multiple times,
+        the decorated function is only executed once.
+        
+        """
+        class TestClass:
+            """A class to test memoization on a property."""
+
+            def a_method(self):
+                """Method that should be called only once."""
+                return 42
+
+            @memoize
+            def a_property(self):
+                """Property that wraps a_method and is memoized."""
+                return self.a_method()
+
+        # Patch 'a_method' to track its calls
+        with patch.object(TestClass, 'a_method') as mock_a_method:
+            mock_a_method.return_value = 42
+
+            # Instantiate the class
+            test_instance = TestClass()
+
+            # Call the property twice
+            result1 = test_instance.a_property
+            result2 = test_instance.a_property
+
+            # Assertions
+            self.assertEqual(result1, 42)
+            self.assertEqual(result2, 42)
+            
+            # Key assertion: a_method must be called only once
+            mock_a_method.assert_called_once()
