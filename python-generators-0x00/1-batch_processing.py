@@ -24,10 +24,12 @@ def stream_users_in_batches(batch_size):
             
     except mysql.connector.Error as e:
         print(f"Error: {e}")
+    
     finally:
         if 'connection' in locals() and connection.is_connected():
             cursor.close()
             connection.close()
+    return
 
 def batch_processing(batch_size):
     """
