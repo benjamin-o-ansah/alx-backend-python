@@ -34,7 +34,7 @@ class TestGithubOrgClient(TestCase):
         # Assert that get_json was called exactly once with the expected URL
         mock_get_json.assert_called_once_with(expected_url)
     
-    @patch('client.GithubOrgClient.org', new_callable=property)
+    @patch('client.get_json', new_callable=property)
     def test_public_repos_url(self, mock_org,mock_get_json):
         """
         Tests that public_repos_url returns the correct URL
