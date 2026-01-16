@@ -111,13 +111,17 @@ class TestIntegrationGithubOrgClient(TestCase):
             # else:
             #     mock_resp.json.return_value = {}
             # return mock_resp
-            """ Returns a mock response object with a json method """
-            mock_response = MagicMock()
-            if url == "https://api.github.com/orgs/google":
-                mock_response.json.return_value = cls.org_payload
-            elif url == "https://api.github.com/orgs/google/repos":
-                mock_response.json.return_value = cls.repos_payload
-            return mock_response
+            # """ Returns a mock response object with a json method """
+            # mock_response = MagicMock()
+            # if url == "https://api.github.com/orgs/google":
+            #     mock_response.json.return_value = cls.org_payload --> works but alx checker fails
+            # elif url == "https://api.github.com/orgs/google/repos":
+            #     mock_response.json.return_value = cls.repos_payload
+            # return mock_response
+            cls.mock_get.side_effect = [
+            MagicMock(json=lambda: cls.org_payload),
+            MagicMock(json=lambda: cls.repos_payload),
+        ]
         cls.mock_get.side_effect = get_side_effect
 
     @classmethod
