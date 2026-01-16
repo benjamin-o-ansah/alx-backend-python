@@ -98,15 +98,15 @@ class TestIntegrationGithubOrgClient(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.get_patcher = patch("client.get_json")
+        cls.get_patcher = patch("requests.get")
         cls.mock_get = cls.get_patcher.start()
 
         # Side effect to return fixture based on URL
         def get_side_effect(url, *args, **kwargs):
             mock_resp = MagicMock()
-            if url.endswith("/orgs/google"):
+            if url == "https://api.github.com/orgs/google":
                 mock_resp.json.return_value = cls.org_payload
-            elif url.endswith("/orgs/google/repos"):
+            elif url == "https://api.github.com/orgs/google/repos":
                 mock_resp.json.return_value = cls.repos_payload
             else:
                 mock_resp.json.return_value = {}
@@ -119,11 +119,13 @@ class TestIntegrationGithubOrgClient(TestCase):
         cls.get_patcher.stop()
 
     def test_public_repos(self):
-        client = GithubOrgClient(self.org_payload["login"])
+        """Test public_repos without license filter"""
+        client = GithubOrgClient("google")
         self.assertEqual(client.public_repos(), self.expected_repos)
 
     def test_public_repos_with_license(self):
-        client = GithubOrgClient(self.org_payload["login"])
+        """Test public_repos with apache-2.0 license filter"""
+        client = GithubOrgClient("google")
         self.assertEqual(
             client.public_repos(license="apache-2.0"),
             self.apache2_repos
