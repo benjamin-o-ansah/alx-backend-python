@@ -103,15 +103,19 @@ class TestIntegrationGithubOrgClient(TestCase):
 
         # Side effect to return fixture based on URL
         def get_side_effect(url, *args, **kwargs):
+            mock_resp = MagicMock()
             if url.endswith("/orgs/google"):
-                return cls.org_payload
+                mock_resp.json.return_value = cls.org_payload
             elif url.endswith("/orgs/google/repos"):
-                return cls.repos_payload
-            return {}
+                mock_resp.json.return_value = cls.repos_payload
+            else:
+                mock_resp.json.return_value = {}
+            return mock_resp
         cls.mock_get.side_effect = get_side_effect
 
     @classmethod
     def tearDownClass(cls):
+        """Stop the patcher for requests.get."""
         cls.get_patcher.stop()
 
     def test_public_repos(self):

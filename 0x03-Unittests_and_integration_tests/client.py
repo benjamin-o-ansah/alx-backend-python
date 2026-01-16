@@ -8,10 +8,11 @@ from typing import (
 from urllib import response
 
 from utils import (
-    requests,
     access_nested_map,
     memoize,
 )
+
+import requests
 
 def get_json(url: str) -> dict:
         """Return the JSON payload of a GET request to the URL."""
