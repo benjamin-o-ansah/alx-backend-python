@@ -58,4 +58,3 @@ class TestGithubOrgClient(TestCase):
             mock_get_json.assert_called_once_with(
                 "https://api.github.com/orgs/google/repos"
             )
-
