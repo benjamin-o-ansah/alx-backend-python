@@ -103,14 +103,21 @@ class TestIntegrationGithubOrgClient(TestCase):
 
         # Side effect to return fixture based on URL
         def get_side_effect(url, *args, **kwargs):
-            mock_resp = MagicMock()
+            # mock_resp = MagicMock()
+            # if url == "https://api.github.com/orgs/google":
+            #     mock_resp.json.return_value = cls.org_payload
+            # elif url == "https://api.github.com/orgs/google/repos":
+            #     mock_resp.json.return_value = cls.repos_payload
+            # else:
+            #     mock_resp.json.return_value = {}
+            # return mock_resp
+            """ Returns a mock response object with a json method """
+            mock_response = MagicMock()
             if url == "https://api.github.com/orgs/google":
-                mock_resp.json.return_value = cls.org_payload
+                mock_response.json.return_value = cls.org_payload
             elif url == "https://api.github.com/orgs/google/repos":
-                mock_resp.json.return_value = cls.repos_payload
-            else:
-                mock_resp.json.return_value = {}
-            return mock_resp
+                mock_response.json.return_value = cls.repos_payload
+            return mock_response
         cls.mock_get.side_effect = get_side_effect
 
     @classmethod
