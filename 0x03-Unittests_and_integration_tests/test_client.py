@@ -3,7 +3,7 @@
 Unit tests for the GithubOrgClient class in client.py.
 """
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import patch, PropertyMock
 from parameterized import parameterized
 from client import GithubOrgClient
 
@@ -43,7 +43,7 @@ class TestGithubOrgClient(TestCase):
 
         with patch(
             "client.GithubOrgClient._public_repos_url",
-            new_callable=property
+            new_callable=PropertyMock
         ) as mock_public_repos_url:
             mock_public_repos_url.return_value = (
                 "https://api.github.com/orgs/google/repos"
