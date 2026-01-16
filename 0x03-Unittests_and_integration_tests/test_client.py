@@ -2,13 +2,13 @@
 """
 Unit tests for the GithubOrgClient class in client.py.
 """
-import unittest
 from unittest.mock import patch
 from parameterized import parameterized
 from client import GithubOrgClient
+from unittest import TestCase
 
 
-class TestGithubOrgClient(unittest.TestCase):
+class TestGithubOrgClient(TestCase):
     """
     Tests the GithubOrgClient class methods.
     """
@@ -33,3 +33,19 @@ class TestGithubOrgClient(unittest.TestCase):
 
         # Assert that get_json was called exactly once with the expected URL
         mock_get_json.assert_called_once_with(expected_url)
+    
+    @patch('client.GithubOrgClient.org', new_callable=property)
+    def test_public_repos_url(self, mock_org):
+        """
+        Tests that public_repos_url returns the correct URL
+        from the mocked org payload.
+        """
+        mock_org.return_value = {
+            "repos_url": "https://api.github.com/orgs/google/repos"
+        }
+
+        client = GithubOrgClient("google")
+        self.assertEqual(
+            client.public_repos_url,
+            "https://api.github.com/orgs/google/repos"
+        )
