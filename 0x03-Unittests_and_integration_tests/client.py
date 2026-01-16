@@ -5,18 +5,26 @@ from typing import (
     List,
     Dict,
 )
+from urllib import response
 
 from utils import (
-    get_json,
+    requests,
     access_nested_map,
     memoize,
 )
 
+def get_json(url: str) -> dict:
+        """Return the JSON payload of a GET request to the URL."""
+        response = requests.get(url)
+        response.raise_for_status()
+        return response.json()
 
 class GithubOrgClient:
     """A Githib org client
     """
     ORG_URL = "https://api.github.com/orgs/{org}"
+
+    
 
     def __init__(self, org_name: str) -> None:
         """Init method of GithubOrgClient"""
