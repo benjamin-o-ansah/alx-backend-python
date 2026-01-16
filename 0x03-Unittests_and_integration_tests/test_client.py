@@ -36,9 +36,9 @@ class TestGithubOrgClient(TestCase):
         Tests GithubOrgClient.public_repos.
         """
         mock_get_json.return_value = [
-            {"name": "repo1"},
-            {"name": "repo2"},
-            {"name": "repo3"},
+            {"name": "repo1", "license": {"key": "mit"}},
+            {"name": "repo2", "license": {"key": "apache-2.0"}},
+            {"name": "repo3", "license": {"key": "mit"}},
         ]
 
         with patch(
@@ -58,3 +58,4 @@ class TestGithubOrgClient(TestCase):
             mock_get_json.assert_called_once_with(
                 "https://api.github.com/orgs/google/repos"
             )
+
