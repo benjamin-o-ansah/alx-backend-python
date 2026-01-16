@@ -948,3 +948,9 @@ TEST_PAYLOAD = [
     ['dagger', 'kratu', 'traceur-compiler', 'firmata.py'],
   )
 ]
+
+org_payload = {"login": "google", "repos_url": "https://api.github.com/orgs/google/repos"}
+repos_payload = TEST_PAYLOAD[0][1]
+expected_repos = TEST_PAYLOAD[0][2]
+apache2_repos = TEST_PAYLOAD[0][3]
+# List of repository names with Apache-2.0 license

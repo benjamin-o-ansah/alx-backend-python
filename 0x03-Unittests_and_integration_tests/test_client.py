@@ -3,10 +3,10 @@
 Unit tests for the GithubOrgClient class in client.py.
 """
 from unittest import TestCase
-from unittest.mock import patch, PropertyMock
-from parameterized import parameterized
+from unittest.mock import patch, PropertyMock,MagicMock
+from parameterized import parameterized,parameterized_class
 from client import GithubOrgClient
-
+import fixtures
 
 class TestGithubOrgClient(TestCase):
     """
@@ -79,3 +79,53 @@ class TestGithubOrgClient(TestCase):
             mock_get_json.assert_called_once_with(
                 "https://api.github.com/orgs/google/repos"
             )
+
+@parameterized_class(
+    ("org_payload", "repos_payload", "expected_repos", "apache2_repos"),
+    [
+        (
+            fixtures.org_payload,
+            fixtures.repos_payload,
+            fixtures.expected_repos,
+            fixtures.apache2_repos,
+        )
+    ]
+)
+class TestIntegrationGithubOrgClient(TestCase):
+    """
+    Integration tests for GithubOrgClient.public_repos.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.get_patcher = patch("client.get_json")
+        cls.mock_get = cls.get_patcher.start()
+
+        # Side effect to return fixture based on URL
+        def get_side_effect(url, *args, **kwargs):
+            if url.endswith("/orgs/google"):
+                return cls.org_payload
+            elif url.endswith("/orgs/google/repos"):
+                return cls.repos_payload
+            return {}
+        cls.mock_get.side_effect = get_side_effect
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.get_patcher.stop()
+
+    def test_public_repos(self):
+        client = GithubOrgClient(self.org_payload["login"])
+        self.assertEqual(client.public_repos(), self.expected_repos)
+
+    def test_public_repos_with_license(self):
+        client = GithubOrgClient(self.org_payload["login"])
+        self.assertEqual(
+            client.public_repos(license="apache-2.0"),
+            self.apache2_repos
+        )
+
+print(fixtures.org_payload)
+print(fixtures.repos_payload)
+print(fixtures.expected_repos)
+print(fixtures.apache2_repos)
