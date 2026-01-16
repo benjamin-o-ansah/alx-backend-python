@@ -92,7 +92,7 @@ class TestIntegrationGithubOrgClient(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # cls.get_patcher = patch("requests.get")
+        cls.get_patcher = patch("requests.get")
         # cls.mock_get = cls.get_patcher.start()
 
         # Side effect to return fixture based on URL
@@ -128,7 +128,7 @@ class TestIntegrationGithubOrgClient(TestCase):
             return mock_response
 
         # Start the patcher
-        cls.get_patcher = patch("requests.get")
+        # cls.get_patcher = patch("requests.get")
         cls.mock_get = cls.get_patcher.start()
         cls.mock_get.side_effect = get_side_effect
 
