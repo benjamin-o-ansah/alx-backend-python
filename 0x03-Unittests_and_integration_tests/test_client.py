@@ -6,7 +6,7 @@ from unittest import TestCase
 from unittest.mock import patch, PropertyMock,MagicMock
 from parameterized import parameterized,parameterized_class
 from client import GithubOrgClient
-import fixtures
+from fixtures import TEST_PAYLOAD
 
 class TestGithubOrgClient(TestCase):
     """
@@ -82,14 +82,8 @@ class TestGithubOrgClient(TestCase):
 
 @parameterized_class(
     ("org_payload", "repos_payload", "expected_repos", "apache2_repos"),
-    [
-        (
-            fixtures.org_payload,
-            fixtures.repos_payload,
-            fixtures.expected_repos,
-            fixtures.apache2_repos,
-        )
-    ]
+    TEST_PAYLOAD
+    
 )
 class TestIntegrationGithubOrgClient(TestCase):
     """
@@ -98,30 +92,44 @@ class TestIntegrationGithubOrgClient(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.get_patcher = patch("requests.get")
-        cls.mock_get = cls.get_patcher.start()
+        # cls.get_patcher = patch("requests.get")
+        # cls.mock_get = cls.get_patcher.start()
 
         # Side effect to return fixture based on URL
-        def get_side_effect(url, *args, **kwargs):
-            # mock_resp = MagicMock()
-            # if url == "https://api.github.com/orgs/google":
-            #     mock_resp.json.return_value = cls.org_payload
-            # elif url == "https://api.github.com/orgs/google/repos":
-            #     mock_resp.json.return_value = cls.repos_payload
-            # else:
-            #     mock_resp.json.return_value = {}
-            # return mock_resp
-            # """ Returns a mock response object with a json method """
-            # mock_response = MagicMock()
-            # if url == "https://api.github.com/orgs/google":
-            #     mock_response.json.return_value = cls.org_payload --> works but alx checker fails
-            # elif url == "https://api.github.com/orgs/google/repos":
-            #     mock_response.json.return_value = cls.repos_payload
-            # return mock_response
-            cls.mock_get.side_effect = [
-            MagicMock(json=lambda: cls.org_payload),
-            MagicMock(json=lambda: cls.repos_payload),
-        ]
+        # def get_side_effect(url, *args, **kwargs):
+        #     # mock_resp = MagicMock()
+        #     # if url == "https://api.github.com/orgs/google":
+        #     #     mock_resp.json.return_value = cls.org_payload
+        #     # elif url == "https://api.github.com/orgs/google/repos":
+        #     #     mock_resp.json.return_value = cls.repos_payload
+        #     # else:
+        #     #     mock_resp.json.return_value = {}
+        #     # return mock_resp
+        #     # """ Returns a mock response object with a json method """
+        #     mock_response = MagicMock()
+        #     if url == "https://api.github.com/orgs/google":
+        #         mock_response.json.return_value = cls.org_payload
+        #     elif url == "https://api.github.com/orgs/google/repos":
+        #         mock_response.json.return_value = cls.repos_payload
+        #     return mock_response
+        # #     cls.mock_get.side_effect = [
+        # #     MagicMock(json=lambda: cls.org_payload),
+        # #     MagicMock(json=lambda: cls.repos_payload),
+        # # ]
+        # cls.mock_get.side_effect = get_side_effect
+
+        def get_side_effect(url):
+            """Returns fixture based on the URL called"""
+            mock_response = MagicMock()
+            if url == "https://api.github.com/orgs/google":
+                mock_response.json.return_value = cls.org_payload
+            elif url == "https://api.github.com/orgs/google/repos":
+                mock_response.json.return_value = cls.repos_payload
+            return mock_response
+
+        # Start the patcher
+        cls.get_patcher = patch("requests.get")
+        cls.mock_get = cls.get_patcher.start()
         cls.mock_get.side_effect = get_side_effect
 
     @classmethod
@@ -142,7 +150,7 @@ class TestIntegrationGithubOrgClient(TestCase):
             self.apache2_repos
         )
 
-print(fixtures.org_payload)
-print(fixtures.repos_payload)
-print(fixtures.expected_repos)
-print(fixtures.apache2_repos)
+# print(TEST_PAYLOAD.org_payload)
+# print(fixtures.repos_payload)
+# print(fixtures.expected_repos)
+# print(fixtures.apache2_repos)
