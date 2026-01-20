@@ -1,0 +1,21 @@
+{
+  "info": { "name": "Messaging App API", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" },
+  "item": [
+    {
+      "name": "JWT Login",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/token/",
+        "body": { "mode": "raw", "raw": "{\"username\": \"testuser\", \"password\": \"pass123\"}" }
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('access_token', pm.response.json().access);"
+        ]}
+      }]
+    }
+  ]
+}
+
