@@ -1,5 +1,5 @@
 # messaging_app/chats/views.py
-from rest_framework import viewsets
+from rest_framework import viewsets,status
 from .models import Conversation,Message
 from .permissions import IsParticipantOfConversation
 from .serializers import (
@@ -9,13 +9,15 @@ from .serializers import (
     MessageDetailSerializer,
     MessageUpdateSerializer
 )
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 class ConversationViewSet(viewsets.ModelViewSet):
     """
     ViewSet to manage user conversations.
     Uses different serializers for list and detail actions.
     """
-    permission_classes = [IsParticipantOfConversation]
+    permission_classes = [IsAuthenticated, IsParticipantOfConversation]
 
     def get_queryset(self):
         # Optimize with prefetch_related to avoid N+1 queries 
@@ -36,7 +38,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     """
     Handles Listing, Creating, and Updating (read status) Messages.
     """
-    permission_classes = [IsParticipantOfConversation]
+    permission_classes = [IsAuthenticated,IsParticipantOfConversation]
 
     def get_queryset(self):
         # Optimized with select_related for sender info
@@ -55,3 +57,23 @@ class MessageViewSet(viewsets.ModelViewSet):
         
         # Default to the main MessageSerializer for 'list' and 'create'
         return MessageSerializer
+    
+    def create(self, request, *args, **kwargs):
+        """
+        Custom create to handle the conversation_id from request data
+        and return 403 if the user is not a participant.
+        """
+        serializer = self.get_serializer(data=request.data)
+        
+        # This will trigger the validation logic in your MessageSerializer.create
+        # which checks if the user belongs to the conversation_id.
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        # If the error is specifically about participation, ensure we return 403
+        errors = serializer.errors
+        if 'conversation_id' in errors and 'participant' in str(errors['conversation_id']):
+            return Response(errors, status=status.HTTP_403_FORBIDDEN)
+            
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
