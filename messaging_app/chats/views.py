@@ -39,6 +39,11 @@ class MessageViewSet(viewsets.ModelViewSet):
     Handles Listing, Creating, and Updating (read status) Messages.
     """
     permission_classes = [IsAuthenticated,IsParticipantOfConversation]
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+    pagination_class = MessagePagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MessageFilter
 
     def get_queryset(self):
         # Optimized with select_related for sender info

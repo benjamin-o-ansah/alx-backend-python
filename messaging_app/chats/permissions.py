@@ -28,4 +28,4 @@ class IsParticipantOfConversation(permissions.BasePermission):
             return obj.sender == request.user
 
         # For GET, HEAD, or OPTIONS, being a participant is enough
-        return True
+        return request.user in obj.conversation.participants.all()
