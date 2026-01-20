@@ -9,10 +9,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
 
-        # Add custom claims (these will be encoded in the JWT)
+        
         token['username'] = user.username
         token['email'] = user.email
-        # You can add more fields if needed for your messaging app
         
         return token
 

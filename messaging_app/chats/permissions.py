@@ -1,17 +1,20 @@
+# chats/permissions.py
 from rest_framework import permissions
 
 class IsParticipantOfConversation(permissions.BasePermission):
     """
-    Custom permission to only allow participants of a conversation to view it.
+    Permission to allow only participants of a conversation 
+    to view or modify messages within it.
     """
-    def has_object_permission(self, request, view, obj):
-        # Assuming your Conversation model has a many-to-many 'participants' field
-        # or your Message model has a 'sender'/'receiver' field.
-        return request.user in obj.participants.all()
 
-class IsMessageOwner(permissions.BasePermission):
-    """
-    Custom permission to only allow the sender of a message to edit/delete it.
-    """
     def has_object_permission(self, request, view, obj):
-        return obj.sender == request.user
+        # Allow access only if the user is in the conversation's participants
+        # This works for Conversation objects
+        if hasattr(obj, 'participants'):
+            return request.user in obj.participants.all()
+        
+        # If the object is a Message, check its parent conversation
+        if hasattr(obj, 'conversation'):
+            return request.user in obj.conversation.participants.all()
+        
+        return False
